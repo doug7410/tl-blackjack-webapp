@@ -1,0 +1,25 @@
+Routs
+- /new_game 
+	- ask for name
+- /bet
+	- display chips and ask for bet
+		- check that bet is a number and not more than chips
+- /game 
+	-display cards
+	- buttons for hit and stand
+	- hit or stand goes to /player_turn rout
+	- /player_turn check if it's a hit or stand
+	- if hit results in bust or blackjack it goes to /check_winner
+	- if stand /player_turn gets stand redirect to dealer turn
+
+- /dealer_turn
+	- adds cards to dealer hand until condition is met
+  - when condition is met it checks who won
+
+- /check_winner
+	- check conditoins to see if eaither the player or dealer 
+		bust, won, or got blackjack
+
+- /bank 
+	- adds or subtract form player chips 
+	- redirects to game and asked to play again
