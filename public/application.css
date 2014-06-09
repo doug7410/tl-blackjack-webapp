@@ -1,0 +1,11 @@
+form#hit_form, form#stay_form{
+    float: left;
+    margin-right: 10px;
+}
+
+.cards li{
+    display: inline-block;
+    list-style-type: none;
+    margin: 0 10px 0 0;
+    border: solid 1px #000;
+}

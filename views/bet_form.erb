@@ -1,0 +1,6 @@
+<h3>How much would you like to bet for this round?</h3>
+<p>Hi <%= session[:username] %>. You have $<%= session[:player_money] %></p>
+<form action="/place_bet" method="post">
+    <input type="text" name="bet_ammount">
+    <input type="submit" value="Make Bet">
+</form>
