@@ -1,3 +1,7 @@
+body{
+  font-family: 'Armata', sans-serif;
+}
+
 form#hit_form, form#stay_form{
     float: left;
     margin-right: 10px;
@@ -84,4 +88,11 @@ hr.style-eight:after {
 .hit_or_stay{
   margin: 15px auto;
   width: 200px;
+}
+.title{
+ text-align: center;
+ font-family: 'Anton', sans-serif;
+}
+h5, .play_again{
+  display: inline-block;
 }

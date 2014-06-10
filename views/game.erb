@@ -1,4 +1,4 @@
-<!--<h1>Blackjack!</h1>-->
+<h1 class="title">Ruby Blackjack!</h1>
 <!-- show winner or looser and ask to play again -->
 <% if !@dealer_turn and !@show_hit_stay_buttons%>
 <%if @error %>
@@ -9,7 +9,7 @@
 <% end %>
 <h5>Play again?</h5>
   <% if session[:player_money] > 0 %>
-  <p>
+  <p class="play_again">
     <a href="/bet" class="btn btn-primary">Yes</a>
     <a href="/game/over" class="btn ">No</a>
   </p>
@@ -63,7 +63,7 @@
   </ul>
   <h4 class="name"><%= session[:username] %></h4>
   <p class="total">
-    total: <%= @player_total %>
+    total: <%= calc_cards(session[:player_hand]) %>
     <% if blackjack_or_bust_msg(session[:player_hand]) %>
       <span class="bb_message">
         <%= blackjack_or_bust_msg(session[:player_hand]) %>
