@@ -19,6 +19,7 @@
 <% end %>
 
 <!-- start Blackjack Table -->
+<% if session[:round] > 0 %>
 <div class="blackjack_table">
 
 <!-- dealer -->
@@ -95,6 +96,7 @@
   </ul> 
 </div>
 </div>
+<% end %>
 <!-- end of table -->
 
 
