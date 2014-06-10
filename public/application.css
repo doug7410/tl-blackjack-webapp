@@ -35,7 +35,16 @@ form#hit_form, form#stay_form{
 
 .game_stats ul li {
     display: inline-block;
-    margin: 0 10px;
+    margin: 0 40px;
+    font-size: 16px;
+}
+
+.game_stats{
+  background: #000;
+  border-radius: 3px;
+  margin: 10px 0 0 0;
+  padding: 12px 0 5px;
+  clear: both;
 }
 
 /* Glyph, by Harry Roberts */
@@ -64,4 +73,15 @@ hr.style-eight:after {
 }
 .name{
   display: inline-block;
+}
+
+.bb_message{
+  font-weight: bold;
+  font-size: 16px;
+  display: inline-block;
+  margin-left: 10px; 
+}
+.hit_or_stay{
+  margin: 15px auto;
+  width: 200px;
 }

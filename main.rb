@@ -40,6 +40,28 @@ helpers do
   def give_back_bet
     session[:player_money] += session[:bet_ammount].to_i
   end
+
+  def blackjack_or_bust_msg(hand)
+    if calc_cards(hand) > 21
+      "Bust!"
+    elsif calc_cards(hand) == 21
+      "Blackjack!"
+    end
+  end
+
+  def loser!(msg) 
+    @error = "<strong>Sorry #{session[:username]}. #{msg}. </strong> You lost. Better luck next time."
+  end
+
+  def winner!(msg)
+    @success = "<strong>Congratulations #{session[:username]}. #{msg}</strong> You win!"
+  end
+
+  def push!
+    @success = "It's a push. You get your bet back."
+    give_back_bet
+  end
+
 end
 
 get '/' do
@@ -81,13 +103,11 @@ get '/bet' do
   @bet_form = true
   @username_form = false
   erb :game
-  #erb :bet_form
 end
 
 post '/place_bet' do
   bet = params[:bet_ammount].to_i
   
-
   if !bet || bet <= 0 || bet > session[:player_money]
     @input_error = "Plese enter a number between 1 and #{session[:player_money]}"
     @bet_form = true
@@ -118,7 +138,8 @@ get '/game' do
   @player_total = calc_cards(session[:player_hand])
 
   if @player_total == 21 
-    @success = "Congrats #{session[:username]}! You have blackjack!"
+    winner!('You have Blackjack!')
+    #@success = "Congrats #{session[:username]}! You have blackjack!"
     @show_hit_stay_buttons = false
   end
   erb :game
@@ -132,14 +153,13 @@ post '/game/player/hit' do
 
   if @player_total > 21  # bust 
     @show_hit_stay_buttons = false
-    @error = "Bust!"
-    #redirect '/end_game'
+    loser!('You busted')
+    #@error = "Bust!"
   elsif @player_total == 21 # hit blackjack
     @show_hit_stay_buttons = false
-    @success = "blackjack!"
+    winner!('You have Blackjack!')
+    #@success = "blackjack!"
     add_winnings
-    #session[:player_money] += (session[:bet_ammount].to_i * 2)
-    #redirect '/end_game'
   end
 
   #go back to the game template
@@ -155,18 +175,19 @@ get '/dealer_turn' do
   @show_hit_stay_buttons = false
   @dealer_total = calc_cards(session[:dealer_hand])
   if @dealer_total == 21
-    @error = "Sorry, the dealer has blackjack. You loose."
+    loser!('The dealer has blackjack')
+    #@error = "Sorry, the dealer has blackjack. You loose."
   elsif @dealer_total > 16 and @dealer_total < 21
     @dealer_turn = false
     redirect '/compare_hands'
   elsif @dealer_total > 21
     @dealer_turn = false
-    @success = "The dealer bust! You win!"
+    winner!("The dealer busted.")
+    #@success = "The dealer bust! You win!"
     add_winnings
   else
     @dealer_turn = true
   end
-
   erb :game
 end
 
@@ -182,14 +203,23 @@ get '/compare_hands' do
   @show_hit_stay_buttons = false
 
   if @dealer_total > @player_total
-    @error = "Sorry! The dealer wins this round."
+    loser!("The dealer wins with #{calc_cards(session[:dealer_hand])}")
+    #@error = "Sorry! The dealer wins this round."
   elsif @dealer_total < @player_total
-    @success = "Congrats! You win this round."
+    winner!("You beat the dealer with #{calc_cards(session[:player_hand])}.")
+    #@success = "Congrats! You win this round."
     add_winnings
   else
-    @success = "It looks like we have a tie"
-    give_back_bet
+    push!
   end
-
   erb :game
+end
+
+get '/game/over' do
+  erb :game_over
+end
+
+get '/play_again' do
+  session[:player_money] = 500
+  redirect '/bet'
 end

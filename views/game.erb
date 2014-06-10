@@ -8,16 +8,29 @@
   <div class="alert alert-success"><%=@success%></div>
 <% end %>
 <h5>Play again?</h5>
-<p>
-  <a href="/bet" class="btn btn-primary">Yes</a>
-  <a href="/game/over" class="btn ">No</a>
-</p>
+  <% if session[:player_money] > 0 %>
+  <p>
+    <a href="/bet" class="btn btn-primary">Yes</a>
+    <a href="/game/over" class="btn ">No</a>
+  </p>
+  <% else %>
+    <p>You're broke! Click <a href="/play_again">here</a> if you would like to start oevr again with $500!</p>
+  <% end %>
 <% end %>
 
+<!-- start Blackjack Table -->
 <div class="blackjack_table">
+
 <!-- dealer -->
 <div>
-  <h4>Dealer</h4>
+  <h4 class="name" >Dealer</h4><% if @dealer_total %>
+    <p class="total">Total: <%= @dealer_total %></p>
+    <% if blackjack_or_bust_msg(session[:dealer_hand]) %>
+      <span class="bb_message">
+        <%= blackjack_or_bust_msg(session[:dealer_hand]) %>
+      </span>
+    <% end %>
+    <% end %>
     <% if !@show_hit_stay_buttons %>
     <ul class="cards">
       <% session[:dealer_hand].each do |card| %>
@@ -31,16 +44,16 @@
     </ul>
     <% end %>
     
-    <% if @dealer_total %>
-    <p>Dealer's total: <%= @dealer_total %></p>
-    <% end %>
+    <!-- show dealer next card button -->
     <% if @dealer_turn %>
     <form action="/game/dealer/hit" method="post">
-      <input type="submit" value="Show next card" class="btn btn-success btn-small">
+      <input type="submit" value="Show the dealer's next card" class="btn btn-success btn-small">
     </form>
     <% end %>
+
 </div>
 <hr class="style-eight">
+
 <!--player-->
 <div>
   <ul class="cards">
@@ -48,8 +61,26 @@
       <li><img src="/images/cards/<%= card[2] %>" /></li>
   <% end %>
   </ul>
-  <h4 class="name"><%= session[:username] %></h4><p class="total">total: <%= @player_total %></p>
+  <h4 class="name"><%= session[:username] %></h4>
+  <p class="total">
+    total: <%= @player_total %>
+    <% if blackjack_or_bust_msg(session[:player_hand]) %>
+      <span class="bb_message">
+        <%= blackjack_or_bust_msg(session[:player_hand]) %>
+      </span>
+    <% end %>
+  </p>
 </div>
+<% if @show_hit_stay_buttons %>
+<div class="hit_or_stay">
+<form id="hit_form" action="/game/player/hit" method="post">
+    <input type="submit" value="Hit" class="btn btn-success btn-large">
+</form>
+<form id="stay_form" action="/game/player/stay" method="post">
+    <input type="submit" value="Stay" class="btn btn-warning btn-large">
+</form>
+</div>
+<% end %>
 <div class="game_stats">
   <ul>
     <li>
@@ -65,15 +96,6 @@
 </div>
 </div>
 <!-- end of table -->
-
-<% if @show_hit_stay_buttons %>
-<form id="hit_form" action="/game/player/hit" method="post">
-    <input type="submit" value="Hit" class="btn btn-success btn-large">
-</form>
-<form id="stay_form" action="/game/player/stay" method="post">
-    <input type="submit" value="Stay" class="btn btn-warning btn-large">
-</form>
-<% end %>
 
 
 <!-- Modal -->
