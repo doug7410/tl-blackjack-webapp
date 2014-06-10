@@ -1,21 +1,23 @@
-<h1>Blackjack!</h1>
-<p>
-    Welcome <%= session[:username] %>. You have 
-    <strong>$<%= session[:player_money] %></strong>.
-    Bet amount this round: 
-    <strong>$<%= session[:bet_ammount] %></strong>. 
-</p>
+<!--<h1>Blackjack!</h1>-->
+<!-- show winner or looser and ask to play again -->
 <% if !@dealer_turn and !@show_hit_stay_buttons%>
+<%if @error %>
+  <div class="alert alert-error"><%=@error%></div>
+<% end %>
+<%if @success %>
+  <div class="alert alert-success"><%=@success%></div>
+<% end %>
 <h5>Play again?</h5>
 <p>
   <a href="/bet" class="btn btn-primary">Yes</a>
   <a href="/game/over" class="btn ">No</a>
 </p>
 <% end %>
-<div class="well">
-  
-  <h4>Dealer Cards</h4>
-    
+
+<div class="blackjack_table">
+<!-- dealer -->
+<div>
+  <h4>Dealer</h4>
     <% if !@show_hit_stay_buttons %>
     <ul class="cards">
       <% session[:dealer_hand].each do |card| %>
@@ -32,21 +34,37 @@
     <% if @dealer_total %>
     <p>Dealer's total: <%= @dealer_total %></p>
     <% end %>
-</div>
-<% if @dealer_turn %>
-<form action="/game/dealer/hit" method="post">
-    <input type="submit" value="Show next card" class="btn btn-success btn-small">
-</form>
-<% end %>
-<div class="well">
-  <h4>Player Cards</h4>
-    <ul class="cards">
-    <% session[:player_hand].each do |card| %>
-        <li><img src="/images/cards/<%= card[2] %>" /></li>
+    <% if @dealer_turn %>
+    <form action="/game/dealer/hit" method="post">
+      <input type="submit" value="Show next card" class="btn btn-success btn-small">
+    </form>
     <% end %>
-  </ul>
-  <p>Player's total: <%= @player_total %></p>
 </div>
+<hr class="style-eight">
+<!--player-->
+<div>
+  <ul class="cards">
+  <% session[:player_hand].each do |card| %>
+      <li><img src="/images/cards/<%= card[2] %>" /></li>
+  <% end %>
+  </ul>
+  <h4 class="name"><%= session[:username] %></h4><p class="total">total: <%= @player_total %></p>
+</div>
+<div class="game_stats">
+  <ul>
+    <li>
+     Bank: $<%= session[:player_money] %>
+    </li>
+    <li>
+      Bet: $<%= session[:bet_ammount] %>
+    </li>
+    <li>
+      Current Round: <%= session[:round] %>
+    </li>
+  </ul> 
+</div>
+</div>
+<!-- end of table -->
 
 <% if @show_hit_stay_buttons %>
 <form id="hit_form" action="/game/player/hit" method="post">
@@ -55,6 +73,61 @@
 <form id="stay_form" action="/game/player/stay" method="post">
     <input type="submit" value="Stay" class="btn btn-warning btn-large">
 </form>
+<% end %>
+
+
+<!-- Modal -->
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <% if @bet_form %>
+    <h3 id="myModalLabel">Place your bet.</h3>
+    <% end %>
+    <% if @username_form %>
+    <h3 id="myModalLabel">Welcome to Blackjack!</h3>
+    <% end %>
+  </div>
+  
+  <div class="modal-body">
+  <% if @input_error %>
+  <div class="alert alert-error"><%= @input_error %></div>
+  <% end %>
+    <% if @bet_form %>
+    
+    <h5>Hi <%= session[:username] %>. How much would you like to bet for this round?</h5>
+    <p>
+      You have $<%= session[:player_money] %>
+    </p>
+    
+    <form action="/place_bet" method="post">
+        <input type="text" name="bet_ammount">
+        <input type="submit" value="Make Bet">
+    </form>
+    <% end %>
+    
+    <% if @username_form %>
+    <p>What is your name?</p>
+    <form action="/set_username" method="post" >
+      <input type="text" name="username"><br>
+      <input type="submit" class="btn">
+    </form>
+    <% end %>
+
+
+  </div>
+  <div class="modal-footer">
+    <!--
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button class="btn btn-primary">Save changes</button>
+    -->
+  </div>
+</div>
+
+<% if @show_modal %>
+<script >
+  $(document).ready(function(){
+    $('#myModal').modal('show');
+  });
+</script>
 <% end %>
 
     

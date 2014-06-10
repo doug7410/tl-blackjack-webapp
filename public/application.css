@@ -7,5 +7,61 @@ form#hit_form, form#stay_form{
     display: inline-block;
     list-style-type: none;
     margin: 0 10px 0 0;
-    border: solid 1px #000;
+}
+
+.cards img{
+  height: 150px;
+  border-radius: 5px;
+  border: solid 1px #ccc;
+  box-shadow: 2px 2px 2px rgba(0,0,0,.1)
+}
+
+.blackjack_table {
+  color: #DEB887;
+  border: solid 2px #ccc;
+  border-radius: 5px;
+  padding: 7px;
+  text-align: center;
+  text-transform: uppercase;
+  background: #177538; /* Old browsers */
+  background: -moz-radial-gradient(center, ellipse cover,  #177538 0%, #24663b 52%, #3b6d5d 100%); /* FF3.6+ */
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#177538), color-stop(52%,#24663b), color-stop(100%,#3b6d5d)); /* Chrome,Safari4+ */
+  background: -webkit-radial-gradient(center, ellipse cover,  #177538 0%,#24663b 52%,#3b6d5d 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-radial-gradient(center, ellipse cover,  #177538 0%,#24663b 52%,#3b6d5d 100%); /* Opera 12+ */
+  background: -ms-radial-gradient(center, ellipse cover,  #177538 0%,#24663b 52%,#3b6d5d 100%); /* IE10+ */
+  background: radial-gradient(ellipse at center,  #177538 0%,#24663b 52%,#3b6d5d 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#177538', endColorstr='#3b6d5d',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */  
+}
+
+.game_stats ul li {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+/* Glyph, by Harry Roberts */
+    
+hr.style-eight {
+    padding: 0;
+    border: none;
+    border-top: medium double #DEB887;
+    color: #DEB886;
+    text-align: center;
+    width: 80%;
+    margin: 30px auto 13px;
+}
+hr.style-eight:after {
+    content: "§";
+    display: inline-block;
+    position: relative; 
+    top: -0.7em;  
+    font-size: 1.5em;
+    padding: 0 0.25em;
+    background: #177538;
+}
+.total{
+  display: inline-block;
+  margin: 0 0 0 15px;
+}
+.name{
+  display: inline-block;
 }

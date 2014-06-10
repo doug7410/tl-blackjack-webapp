@@ -45,6 +45,7 @@ end
 get '/' do
   session[:player_money] = 500
   session[:username] = nil
+  session[:round] = 0
   if session[:username]
   	redirect '/game'
   else
@@ -53,22 +54,50 @@ get '/' do
 end
 
 get '/username_form' do
-	erb :username_form
+  @show_modal = true
+  @username_form = true
+  @bet_form = false
+  if session[:username_missing]
+    @input_error = "Please enter your name."
+  end
+	erb :game
 end
 
 post '/set_username' do
-	session[:username] = params[:username]
-	redirect '/bet'
+	name = params[:username]
+
+  if name == ''
+    session[:username_missing] = true
+    redirect '/username_form'
+  else
+    session[:username] = name
+    session[:username_missing] = false
+	  redirect '/bet'
+  end
 end
 
 get '/bet' do
-  erb :bet_form
+  @show_modal = true
+  @bet_form = true
+  @username_form = false
+  erb :game
+  #erb :bet_form
 end
 
 post '/place_bet' do
-  session[:bet_ammount] = params[:bet_ammount].to_i
-  deduct_bet
-  redirect '/game'
+  bet = params[:bet_ammount].to_i
+  
+
+  if !bet || bet <= 0 || bet > session[:player_money]
+    @input_error = "Plese enter a number between 1 and #{session[:player_money]}"
+    @bet_form = true
+    @show_modal = true
+    erb :game
+  else
+    session[:bet_ammount] = bet
+    deduct_bet  
+    redirect '/game'
+  end
 end
 
 before do
@@ -76,6 +105,7 @@ before do
 end
 
 get '/game' do
+  session[:round] += 1
   cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, "jack", "queen", "king", "ace"]
   suits = ["hearts", "diamonds", "clubs", "spades"]
   session[:deck] = card_imgs(cards.product(suits).shuffle)
@@ -103,7 +133,6 @@ post '/game/player/hit' do
   if @player_total > 21  # bust 
     @show_hit_stay_buttons = false
     @error = "Bust!"
-    deduct_bet
     #redirect '/end_game'
   elsif @player_total == 21 # hit blackjack
     @show_hit_stay_buttons = false
