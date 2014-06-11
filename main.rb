@@ -139,7 +139,7 @@ get '/game' do
 
   if @player_total == 21 
     winner!('You have Blackjack!')
-    #@success = "Congrats #{session[:username]}! You have blackjack!"
+    add_winnings
     @show_hit_stay_buttons = false
   end
   erb :game
@@ -148,7 +148,6 @@ end
 post '/game/player/hit' do
   # deal player a card
     session[:player_hand] << session[:deck].pop
-    # get the new total
     @player_total = calc_cards(session[:player_hand])
 
   if @player_total > 21  # bust 
@@ -157,8 +156,7 @@ post '/game/player/hit' do
     #@error = "Bust!"
   elsif @player_total == 21 # hit blackjack
     @show_hit_stay_buttons = false
-    winner!('You have Blackjack!')
-    #@success = "blackjack!"
+    winner!('You have Blackjack!') 
     add_winnings
   end
 
@@ -176,14 +174,12 @@ get '/dealer_turn' do
   @dealer_total = calc_cards(session[:dealer_hand])
   if @dealer_total == 21
     loser!('The dealer has blackjack')
-    #@error = "Sorry, the dealer has blackjack. You loose."
   elsif @dealer_total > 16 and @dealer_total < 21
     @dealer_turn = false
     redirect '/compare_hands'
   elsif @dealer_total > 21
     @dealer_turn = false
     winner!("The dealer busted.")
-    #@success = "The dealer bust! You win!"
     add_winnings
   else
     @dealer_turn = true
@@ -204,10 +200,8 @@ get '/compare_hands' do
 
   if @dealer_total > @player_total
     loser!("The dealer wins with #{calc_cards(session[:dealer_hand])}")
-    #@error = "Sorry! The dealer wins this round."
   elsif @dealer_total < @player_total
     winner!("You beat the dealer with #{calc_cards(session[:player_hand])}.")
-    #@success = "Congrats! You win this round."
     add_winnings
   else
     push!
