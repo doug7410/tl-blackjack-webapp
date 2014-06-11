@@ -17,10 +17,16 @@ Please review this quiz, which covers lesson 3 materials.
 4. How do you submit an HTTP POST request, with a "username" attribute set to "bob"? 
    What if we wanted a GET request instead?
     
-    You would uee a form with a method of POST and a text input with a name attribute of username.
+    You would use a form with a method of POST and a text input with a name attribute of username.
     <form action="/some/rout" method="post" >
     <input type="text" name="username" value="" > 
-
+    
+    (this is from Albert Agram TA)
+    url command line tool can be used to make a GET request like so:
+    curl http://example.com?username=john
+    For a POST request you can do:
+    curl -X POST -d 'username=mark' http://example.com where -X specifies the method and -d specifies the data on the request.
+    
     If you wanted it to be a GET request, just leave out method="post"
 
 5. Why is it important for us, as web developers, to understand that HTTP is a "stateless" protocol?
@@ -44,6 +50,11 @@ The below questions are about Sinatra:
     
     Request are routed with GET or POST and are either redirected to another rout or they 
     display a template.
+    
+    (this is from Albert Agram TA)
+    The general pattern is a request containing a set of commands is sent to a server. 
+    This generates a response containing response codes and headers. 
+    The user agent acts on this information.
 
 10. In the controller/action, what's the difference between rendering and redirecting?
     
@@ -56,6 +67,11 @@ The below questions are about Sinatra:
 12. Given what you know about ERB templates, when do you suppose the ERB template is turned into HTML?
 
     I think the controller converts it to html and then sends it out in the responce message.
+    
+    (this is from Albert Agram TA)
+    tilt and middleman help render html from an erb template. 
+    They also provide many templating languages that are used in 
+    web frameworks like Rails and Sinatra.
 
 13. What's the role of instance variables in Sinatra?
 
