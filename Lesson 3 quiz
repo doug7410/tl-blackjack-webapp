@@ -1,0 +1,62 @@
+Please review this quiz, which covers lesson 3 materials.
+----------------------------------------------------------------
+1. What is HTML? What is CSS? What is Javascript?
+
+    HTML is the markup language of the web. 
+    CSS is for styling HTML. 
+    Javascript is the programing language of the web and is used on the client side.
+
+2. What are the major parts of an HTTP request?
+
+    The major parts of an HTTP request are the URL and the verb, such as GET or POST.
+
+3. What are the major parts of an HTTP response?
+
+    The major parts of a response are the status code, such as 202 or 404, and the message.
+
+4. How do you submit an HTTP POST request, with a "username" attribute set to "bob"? 
+   What if we wanted a GET request instead?
+    
+    You would uee a form with a method of POST and a text input with a name attribute of username.
+    <form action="/some/rout" method="post" >
+    <input type="text" name="username" value="" > 
+
+    If you wanted it to be a GET request, just leave out method="post"
+
+5. Why is it important for us, as web developers, to understand that HTTP is a "stateless" protocol?
+    
+    Because we need to be aware that as every request is submitted , we need to rebuild the entire 
+    web page. We need to understard that nothing from one state will be transfered to the next state.
+
+6. If the internet is just HTTP requests/responses, why do we only use browsers to interface with web applications? Are there any other options?
+    
+    Web browsers are mainly used beacuase thay allow users to view the HTML messags returned in HTTP responses. Other HTTP options are web crawlers, voice browsers, and moble apps.
+
+7. What is MVC, and why is it important?
+    
+    MVC is model, view, controller. The modlel interfaces with databses and stores states. The contoller routs HTTP request. The view renders HTTP messages and alse sends HTTP requst. It's important becase it
+    sepertates the 3 main compontes needed for displaying and interacting with web pages and applications.
+
+-----------------------------------------------------------------
+The below questions are about Sinatra:
+
+9. At a high level, how are requests processed?
+    
+    Request are routed with GET or POST and are either redirected to another rout or they 
+    display a template.
+
+10. In the controller/action, what's the difference between rendering and redirecting?
+    
+    Rendering displays a template (an erb file). Routing redirects to another action.
+
+11. In the ERB view template, how do you show dynamic content?
+    
+    You use this special tag <% %>. Inside of there you can write ruby code, use instance variables, or helper functions.
+
+12. Given what you know about ERB templates, when do you suppose the ERB template is turned into HTML?
+
+    I think the controller converts it to html and then sends it out in the responce message.
+
+13. What's the role of instance variables in Sinatra?
+
+    Instance variables can be used to pass data from the controller to the ERB templates.
