@@ -3,6 +3,9 @@ require 'sinatra'
 
 set :sessions, true
 
+BLACKJACK_AMT = 21
+DEALER_STAY_AMT = 17
+
 helpers do
   def calc_cards(hand)
     total = 0 #start of with 0
@@ -12,11 +15,15 @@ helpers do
         total += card_value
       elsif card_value == "jack" || card_value == "queen" || card_value == "king" #if the card is a jack, queen, or king
         total += 10
-      elsif card_value == "ace" && total > 10
-        total += 1
-      elsif card_value == "ace" && total <= 10  
+      elsif card_value == "ace"
         total += 11
       end
+
+      #correct for aces
+      if card_value == "ace" and total > BLACKJACK_AMT
+        total -= 10
+      end
+
     end 
     total
   end
@@ -42,24 +49,26 @@ helpers do
   end
 
   def blackjack_or_bust_msg(hand)
-    if calc_cards(hand) > 21
+    if calc_cards(hand) > BLACKJACK_AMT
       "Bust!"
-    elsif calc_cards(hand) == 21
+    elsif calc_cards(hand) == BLACKJACK_AMT
       "Blackjack!"
     end
   end
 
   def loser!(msg) 
-    @error = "<strong>Sorry #{session[:username]}. #{msg}. </strong> You lost. Better luck next time."
+    @loser = "<strong>Sorry #{session[:username]}. #{msg}. </strong> You lost. Better luck next time."
   end
 
   def winner!(msg)
-    @success = "<strong>Congratulations #{session[:username]}. #{msg}</strong> You win!"
+    winnings = session[:bet_ammount].to_i * 2
+    session[:player_money] += winnings
+    @winner = "<strong>Congratulations #{session[:username]}. #{msg}</strong> You win!"
   end
 
   def push!
-    @success = "It's a push. You get your bet back."
-    give_back_bet
+    session[:player_money] += session[:bet_ammount].to_i
+    @winner = "It's a push. You get your bet back."
   end
 
 end
@@ -108,6 +117,7 @@ end
 post '/place_bet' do
   bet = params[:bet_ammount].to_i
   
+  #error checking for bet form
   if !bet || bet <= 0 || bet > session[:player_money]
     @input_error = "Plese enter a number between 1 and #{session[:player_money]}"
     @bet_form = true
@@ -139,9 +149,10 @@ get '/game' do
 
   if @player_total == 21 
     winner!('You have Blackjack!')
-    add_winnings
+    #add_winnings
     @show_hit_stay_buttons = false
   end
+
   erb :game
 end
 
@@ -150,41 +161,55 @@ post '/game/player/hit' do
     session[:player_hand] << session[:deck].pop
     @player_total = calc_cards(session[:player_hand])
 
-  if @player_total > 21  # bust 
+  if @player_total > BLACKJACK_AMT  # bust 
     @show_hit_stay_buttons = false
     loser!('You busted')
-    #@error = "Bust!"
-  elsif @player_total == 21 # hit blackjack
+  elsif @player_total == BLACKJACK_AMT # hit blackjack
     @show_hit_stay_buttons = false
     winner!('You have Blackjack!') 
-    add_winnings
+    #add_winnings
   end
 
   #go back to the game template
-  erb :game
+  erb :game, layout: false
 
 end
 
 post '/game/player/stay' do
-    redirect '/dealer_turn'
+  @show_hit_stay_buttons = false
+  @dealer_total = calc_cards(session[:dealer_hand])
+  if @dealer_total == BLACKJACK_AMT
+    loser!("The dealer win with #{BLACKJACK_AMT}")
+  elsif @dealer_total >= DEALER_STAY_AMT and @dealer_total < BLACKJACK_AMT
+    @dealer_turn = false
+    redirect '/compare_hands'
+  elsif @dealer_total > BLACKJACK_AMT
+    @dealer_turn = false
+    winner!("The dealer busted.")
+    #add_winnings
+  else
+    @dealer_turn = true
+  end
+  
+  erb :game, layout: false
 end
 
 get '/dealer_turn' do
   @show_hit_stay_buttons = false
   @dealer_total = calc_cards(session[:dealer_hand])
-  if @dealer_total == 21
-    loser!('The dealer has blackjack')
-  elsif @dealer_total > 16 and @dealer_total < 21
+  if @dealer_total == BLACKJACK_AMT
+    loser!("The dealer win with #{BLACKJACK_AMT}")
+  elsif @dealer_total >= DEALER_STAY_AMT and @dealer_total < BLACKJACK_AMT
     @dealer_turn = false
     redirect '/compare_hands'
-  elsif @dealer_total > 21
+  elsif @dealer_total > BLACKJACK_AMT
     @dealer_turn = false
     winner!("The dealer busted.")
-    add_winnings
+    #add_winnings
   else
     @dealer_turn = true
   end
-  erb :game
+  erb :game, layout: false
 end
 
 post '/game/dealer/hit' do
@@ -202,11 +227,12 @@ get '/compare_hands' do
     loser!("The dealer wins with #{calc_cards(session[:dealer_hand])}")
   elsif @dealer_total < @player_total
     winner!("You beat the dealer with #{calc_cards(session[:player_hand])}.")
-    add_winnings
+    #add_winnings
   else
     push!
   end
-  erb :game
+
+  erb :game, layout: false
 end
 
 get '/game/over' do

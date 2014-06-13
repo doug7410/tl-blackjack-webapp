@@ -1,11 +1,12 @@
+<div id="game">
 <h1 class="title">Ruby Blackjack!</h1>
 <!-- show winner or looser and ask to play again -->
 <% if !@dealer_turn and !@show_hit_stay_buttons%>
-<%if @error %>
-  <div class="alert alert-error"><%=@error%></div>
+<%if @loser %>
+  <div class="alert alert-error"><%=@loser%></div>
 <% end %>
-<%if @success %>
-  <div class="alert alert-success"><%=@success%></div>
+<%if @winner %>
+  <div class="alert alert-success"><%=@winner%></div>
 <% end %>
 <h5>Play again?</h5>
   <% if session[:player_money] > 0 %>
@@ -47,7 +48,7 @@
     
     <!-- show dealer next card button -->
     <% if @dealer_turn %>
-    <form action="/game/dealer/hit" method="post">
+    <form id="dealer_hits" action="/game/dealer/hit" method="post">
       <input type="submit" value="Show the dealer's next card" class="btn btn-success btn-small">
     </form>
     <% end %>
@@ -72,6 +73,8 @@
     <% end %>
   </p>
 </div>
+
+<!-- hit and stay buttons -->
 <% if @show_hit_stay_buttons %>
 <div class="hit_or_stay">
 <form id="hit_form" action="/game/player/hit" method="post">
@@ -82,6 +85,8 @@
 </form>
 </div>
 <% end %>
+
+<!-- game stats -->
 <div class="game_stats">
   <ul>
     <li>
@@ -98,7 +103,7 @@
 </div>
 <% end %>
 <!-- end of table -->
-
+</div>
 
 <!-- Modal -->
 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -119,12 +124,13 @@
     
     <h5>Hi <%= session[:username] %>. How much would you like to bet for this round?</h5>
     <p>
-      You have $<%= session[:player_money] %>
+      You have $<%= session[:player_money] %> <br>
+      Minimum bet is $10
     </p>
     
     <form action="/place_bet" method="post">
-        <input type="text" name="bet_ammount">
-        <input type="submit" value="Place Bet">
+        $<input type="number" step="10" min="10" name="bet_ammount" id="bet_input">
+        <input type="submit" value="Place Bet"  required>
     </form>
     <% end %>
     
@@ -132,7 +138,7 @@
     <p>What is your name?</p>
     <form action="/set_username" method="post" >
       <input type="text" name="username"><br>
-      <input type="submit" class="btn" value="submit">
+      <input type="submit" class="btn" value="submit" required>
     </form>
     <% end %>
 
@@ -143,10 +149,15 @@
   </div>
 </div>
 
+
 <% if @show_modal %>
 <script >
   $(document).ready(function(){
-    $('#myModal').modal('show');
+    $('#myModal').modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: true
+    });
   });
 </script>
 <% end %>
