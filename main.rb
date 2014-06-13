@@ -176,6 +176,10 @@ post '/game/player/hit' do
 end
 
 post '/game/player/stay' do
+  redirect '/dealer_turn'
+end
+
+get '/dealer_turn' do
   @show_hit_stay_buttons = false
   @dealer_total = calc_cards(session[:dealer_hand])
   if @dealer_total == BLACKJACK_AMT
@@ -190,7 +194,6 @@ post '/game/player/stay' do
   else
     @dealer_turn = true
   end
-  
   erb :game, layout: false
 end
 
