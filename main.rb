@@ -194,24 +194,6 @@ post '/game/player/stay' do
   erb :game, layout: false
 end
 
-get '/dealer_turn' do
-  @show_hit_stay_buttons = false
-  @dealer_total = calc_cards(session[:dealer_hand])
-  if @dealer_total == BLACKJACK_AMT
-    loser!("The dealer win with #{BLACKJACK_AMT}")
-  elsif @dealer_total >= DEALER_STAY_AMT and @dealer_total < BLACKJACK_AMT
-    @dealer_turn = false
-    redirect '/compare_hands'
-  elsif @dealer_total > BLACKJACK_AMT
-    @dealer_turn = false
-    winner!("The dealer busted.")
-    #add_winnings
-  else
-    @dealer_turn = true
-  end
-  erb :game, layout: false
-end
-
 post '/game/dealer/hit' do
   session[:dealer_hand] << session[:deck].pop
   redirect '/dealer_turn'
