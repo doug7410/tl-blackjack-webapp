@@ -1,7 +1,9 @@
 require 'rubygems'
 require 'sinatra' 
 
-set :sessions, true
+use Rack::Session::Cookie, :key => 'rack.session',
+                           :path => '/',
+                           :secret => 'sdf65sfsf54sf65s4fs65f4sf654sf'
 
 BLACKJACK_AMT = 21
 DEALER_STAY_AMT = 17
